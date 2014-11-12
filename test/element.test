@@ -1,0 +1,90 @@
+
+UTest({
+	$config: {
+		timeout: 3000
+	},
+	'`with` test' () {
+		var div = mask.render(`
+			div {
+				section.foo > 'Foo';
+				aside > span #Span;
+			}
+		`);
+		
+		DomTest(div, `
+				
+			with (section) {
+				eq('text', 'Foo');
+			}
+			with (aside > span) {
+				eq('attr', 'id', 'Span');
+			}
+			with (.foo) {
+				eq('text', 'Foo');
+				eq('prop', 'tagName', 'SECTION');
+			}
+		`);
+	},
+	
+	'embeded javascript' () {
+		var div = mask.render(`
+			div > section > 'Foo'
+		`);
+		
+		DomTest(div, `
+			eq('prop', 'tagName', 'DIV');
+			
+			find (section) {
+				slot changeText ($el) {
+					$el.text('Baz');
+				}
+				eq('text', 'Baz');
+			}
+		`);
+	},
+	'await element' () {
+		var div = mask.render('div');
+		setTimeout(function(){
+			$(div).appendMask('section > "Baz"');
+		}, 400);
+		
+		return DomTest(div, `
+			await (section) {
+				eq('text', 'Baz');
+			}
+		`);
+	},
+	'events test' () {
+		var div = mask.render(`
+			div {
+				button > 'Foo'
+			}
+			input value=Foo;
+		`);
+		
+		var button =  $(div).find('button').get(0);
+		// add native
+		button.addEventListener('click', function(){
+			this.textContent = 'Baz';
+		}, false);
+		
+		
+		var test = `
+			with (button) {
+				
+				text('Foo');
+				
+				do click;
+				text('Baz');
+			}
+			with (input) {
+				val('Foo');
+				
+				do type('Hello');
+				val('HelloFoo');
+			}		
+		`;
+		return DomTest(div, test);
+	}
+	
+});

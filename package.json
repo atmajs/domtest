@@ -1,10 +1,8 @@
 {
     "name": "domtest",
     "description": "Helps to perform unit and integration testing on documents and elements",
-    "version": "0.10.0",
-    "contributors": [
-        
-    ],
+    "version": "0.10.1",
+    "contributors": [],
     "main": "./lib/domtest.js",
     "author": "Alexander Kit <alex.kit@atmajs.com>",
     "repository": {
@@ -24,16 +22,20 @@
     "scripts": {
         "test": "atma test"
     },
-    "keywords": ["dom assertions"],
+    "keywords": [
+        "dom assertions"
+    ],
     "atma": {
         "plugins": [
             "atma-loader-traceur"
         ],
-		"settings": {
-			"atma-loader-traceur": {
-				"extensions": ["test", "es6"]
-			}
-		}
-		
+        "settings": {
+            "atma-loader-traceur": {
+                "extensions": [
+                    "test",
+                    "es6"
+                ]
+            }
+        }
     }
 }

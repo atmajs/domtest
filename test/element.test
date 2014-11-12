@@ -85,6 +85,34 @@ UTest({
 			}		
 		`;
 		return DomTest(div, test);
+	},
+	
+	'call test' () {
+		var div = mask.render(`
+			div > 'Foo'
+		`);
+		var test = `
+			text Foo;
+			call text('Baz');
+			text Baz;
+		`;
+		
+		return DomTest(div, test);
+	},
+	
+	'className test' () {
+		var div = mask.render(`
+			div.foo;
+		`);
+		var test = `
+			hasClass foo;
+			hasClass ('baz', false);
+			
+			call addClass('baz');
+			hasClass ('baz');
+		`;
+		
+		return DomTest(div, test);
 	}
 	
 });

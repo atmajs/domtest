@@ -15,6 +15,27 @@ var node_evalMany,
 	
 	function run(fn, node, model, compo) {
 		if (node.expression == null) {
+			var attr = node.attr,
+				arr  = [];
+			
+			for(var key in attr) {
+				if (key === attr[key]) {
+					arr.push(key);
+				}
+			}
+			if (arr.length !== 0) 
+				return arr;
+			
+			
+			var obj = {}, count = 0;
+			for(var key in attr) {
+				obj[key] = attr[key];
+				count++;
+			}
+			if (count > 0) 
+				return [ obj ];
+			
+			
 			log_error('Expression expected for', node.tagName);
 			return null;
 		}

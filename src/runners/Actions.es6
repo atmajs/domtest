@@ -38,7 +38,8 @@ var Actions = {
 		assert.is(current.$[name], 'Function');
 		
 		var args = node_evalMany(current.node, runner.model, runner.compo);
-		current.$.apply(current.$, args);
+		current.$[name].apply(current.$, args);
+		setTimeout(done);
 	},
 	
 	'await' (compo, current, done) {

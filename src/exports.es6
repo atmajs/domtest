@@ -24,6 +24,7 @@ assert_TestDom.create = assert_TestDom;
 // import ./runners/Traverser.es6
 // import ./runners/Simulate.es6
 // import ./runners/Actions.es6
+// import ./runners/jQueryActions.es6
 
 // import ./options.es6
 // import ./Reporter.es6

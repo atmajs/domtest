@@ -2,9 +2,8 @@ var Reporter;
 (function(){
 	Reporter = {
 		report (error, runner) {
-			var fn = options.report;
-			if (fn) {
-				fn(error);
+			if (options.report) {
+				options.report(error);
 				return;
 			}
 			

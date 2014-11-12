@@ -14,6 +14,11 @@ var Traverser = {};
 	function create(name, fallback) {
 		return function assert_Traverse(current) {
 			var selector = current.node.expression;
+			
+			if (/^\s*('|")/.test(selector)) {
+				selector = node_eval(selector);
+			}
+			
 			var x = current.$[name](selector);
 			if (fallback && x.length === 0) {
 				x = current.$[fallback](selector);

@@ -68,10 +68,12 @@ UTest({
 	},
 	'events test' () {
 		var div = mask.render(`
-			div {
-				button > 'Foo'
+			section {
+				div {
+					button > 'Foo'
+				}
+				input value=Foo;
 			}
-			input value=Foo;
 		`);
 		
 		var button =  $(div).find('button').get(0);

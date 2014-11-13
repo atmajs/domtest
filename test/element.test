@@ -80,6 +80,16 @@ UTest({
 			this.textContent = 'Baz';
 		}, false);
 		
+		var input = $(div).filter('input').get(0);
+		input.addEventListener('keydown', assert.await(function(e){
+			logger.log('<keydown>', e.keyCode);
+		}), true);
+		input.addEventListener('keyup', assert.await(function(e){
+			logger.log('<keyup>', e.keyCode);
+		}), true);
+		input.addEventListener('keypress', assert.await(function(e){
+			logger.log('<keypress>', e.keyCode);
+		}), true);
 		
 		var test = `
 			with (button) {

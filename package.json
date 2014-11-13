@@ -1,7 +1,7 @@
 {
     "name": "domtest",
     "description": "Helps to perform unit and integration testing on documents and elements",
-    "version": "0.10.1",
+    "version": "0.10.2",
     "contributors": [],
     "main": "./lib/domtest.js",
     "author": "Alexander Kit <alex.kit@atmajs.com>",

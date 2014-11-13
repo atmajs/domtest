@@ -107,7 +107,9 @@ UTest({
 				val('AFoo');
 			}		
 		`;
-		return DomTest(div, test);
+		
+		var $d = $(div).appendTo('body');
+		return DomTest(div, test).done(()=> $d.remove());
 	},
 	
 	'call test' () {

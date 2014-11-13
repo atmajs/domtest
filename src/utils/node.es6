@@ -39,6 +39,9 @@ var node_evalMany,
 			log_error('Expression expected for', node.tagName);
 			return null;
 		}
+		if (node.expression === '') 
+			return [];
+		
 		return fn(node.expression, model, null, compo);
 	}
 }());

@@ -102,6 +102,7 @@ UTest({
 			with (input) {
 				val('Foo');
 				
+				call focus();
 				do press('A');
 				val('AFoo');
 			}		

@@ -1,7 +1,7 @@
 
 UTest({
 	$config: {
-		timeout: 3000
+		timeout: 4000
 	},
 	'`with` test' () {
 		var div = mask.render(`
@@ -38,6 +38,18 @@ UTest({
 				slot changeText ($el) {
 					$el.text('Baz');
 				}
+				eq('text', 'Baz');
+			}
+		`);
+	},
+	'await timeout' () {
+		var div = mask.render('div');
+		setTimeout(function(){
+			$(div).appendMask('section > "Baz"');
+		}, 200);
+		
+		return DomTest(div, `
+			await (400) {
 				eq('text', 'Baz');
 			}
 		`);
@@ -81,6 +93,7 @@ UTest({
 				val('Foo');
 				
 				do type('Hello');
+				await(100);
 				val('HelloFoo');
 			}		
 		`;

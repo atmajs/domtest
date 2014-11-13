@@ -92,9 +92,8 @@ UTest({
 			with (input) {
 				val('Foo');
 				
-				do type('Hello');
-				await(100);
-				val('HelloFoo');
+				do press('A');
+				val('AFoo');
 			}		
 		`;
 		return DomTest(div, test);

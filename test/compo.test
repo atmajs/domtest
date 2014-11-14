@@ -1,0 +1,16 @@
+UTest({
+	'component' () {
+		var compo = new Compo;
+		var template = `
+			div > input value=Foo;
+			:utest {
+				find (input) {
+					val Foo;
+				}
+			}
+		`
+		mask.render(template, null, null, null, compo);
+		
+		return DomTest.compo(compo);
+	}
+});

@@ -12,8 +12,6 @@ function assert_TestDom (container, utest, callback) {
 	return runner;
 }
 
-assert_TestDom.create = assert_TestDom;
-
 // import ./utils/object.js
 // import ./utils/log.es6
 // import ./utils/dfr.es6
@@ -29,3 +27,7 @@ assert_TestDom.create = assert_TestDom;
 // import ./options.es6
 // import ./Reporter.es6
 // import ./Runner.es6
+// import ./compo.es6
+
+assert_TestDom.create = assert_TestDom;
+assert_TestDom.compo  = compo_domtest;

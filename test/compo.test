@@ -12,5 +12,36 @@ UTest({
 		mask.render(template, null, null, null, compo);
 		
 		return DomTest.compo(compo);
+	},
+	
+	'template' () {
+		var count = 0;
+		DomTest.config({
+			report: (error) => {
+				assert.ifError(error);
+				++count
+			}
+		});
+		
+		var template = `
+			.foo {
+				span > 'One'
+				span > 'Two'
+			}
+			
+			:utest {
+				find (span) > length 2;
+			}
+			
+			:utest {
+				find (.foo) > prop tagName DIV;
+			}
+		`;
+		
+		return DomTest
+			.compo(template)
+			.done(() => {
+				assert(count > 3);
+			});
 	}
 });

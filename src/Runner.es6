@@ -12,16 +12,17 @@ function Runner(container, node, model, compo) {
 	
 	this.process = this.process.bind(this);
 	this.backtrace = new Error().stack;
+	
 }
 
-Runner.prototype = {
+Runner.prototype = obj_extend({
 	
-	getCurrent () {
+	getCurrent_ () {
 		return this.stack[this.stack.length - 1];
 	},
 	
-	getNext (goDeep) {
-		var current = this.getCurrent();
+	getNext_ (goDeep) {
+		var current = this.getCurrent_();
 		if (current == null) 
 			return null;
 		
@@ -30,12 +31,12 @@ Runner.prototype = {
 				$: current.$,
 				node: current.node.nodes[0]
 			});
-			return this.getCurrent();
+			return this.getCurrent_();
 		}
 		this.stack.pop();
 		
 		while (this.stack.length > 0) {
-			var parent = this.getCurrent(),
+			var parent = this.getCurrent_(),
 				nodes = parent.node.nodes,
 				index = nodes.indexOf(current.node);
 				
@@ -53,14 +54,14 @@ Runner.prototype = {
 				$: parent.$,
 				node: nodes[index + 1]
 			});
-			return this.getCurrent();
+			return this.getCurrent_();
 		}
 		return null;
 	},
 	
 	
 	process: function assert_TestDom (error) {
-		var current = this.getNext(error == null);
+		var current = this.getNext_(error == null);
 		if (current == null) {
 			this.resolve();
 			return;
@@ -70,7 +71,7 @@ Runner.prototype = {
 		
 		var traverser = Traverser[name];
 		if (traverser) {
-			var error = this.run(traverser, [current]);
+			var error = this.run_(traverser, [current]);
 			
 			this.process(error);
 			return;
@@ -78,7 +79,7 @@ Runner.prototype = {
 		
 		var action = Actions[name];
 		if (action) {
-			this.run(action, [this, current, this.process]);
+			this.run_(action, [this, current, this.process]);
 			return;
 		}
 		
@@ -87,7 +88,7 @@ Runner.prototype = {
 		
 		var fn = assert_getFn(name);
 		if (fn) {
-			this.run(fn, [ $el, name, args, current.node.attr ]);
+			this.run_(fn, [ $el, name, args, current.node.attr ]);
 			this.process();
 			return;
 		}
@@ -96,14 +97,14 @@ Runner.prototype = {
 		this.process();
 	},
 	
-	run (fn, args, ctx) {
+	run_ (fn, args, ctx) {
 		var error;
 		try {
 			fn.apply(ctx, args);
 		} catch(err) {
 			error = err;
 		}
-		this.report(error);
+		this.report_(error);
 			
 		var next = args[args.length - 1];
 		if (error != null && typeof next === 'function') {
@@ -111,7 +112,7 @@ Runner.prototype = {
 		}
 	},
 	
-	report (error) {
+	report_ (error) {
 		error = this.prepairError_(error);
 		Reporter.report(error);
 	},
@@ -120,7 +121,7 @@ Runner.prototype = {
 		if (error == null) 
 			return null;
 		
-		var node = this.getCurrent().node,
+		var node = this.getCurrent_().node,
 			tmpl = mask.stringify(node, 2),
 			lines = tmpl.split('\n');
 		if (lines.length > 7) {
@@ -146,64 +147,5 @@ Runner.prototype = {
 		
 		error.generatedMessage = false;
 		return error;
-	},
-	
-	// Promise API
-	resolved: null,
-	rejected: null,
-	
-	_resolveCb: null,
-	_rejectCb : null,
-	_alwaysCb : null,
-	
-	resolve (...args) {
-		this.resolved = args;
-		dfr_call(this._resolveCb, args);
-		dfr_call(this._alwaysCb);
-		dfr_clear(this);
-	},
-	reject (...args) {
-		this.rejected = args;
-		dfr_call(this._rejectCb, args);
-		dfr_call(this._alwaysCb);
-		dfr_clear(this);
-	},
-	done (cb) {
-		if (cb == null) 
-			return this;
-		if (this.resolved) {
-			cb.apply(null, this.resolved);
-			return this;
-		}
-		if (this.rejected == null) {
-			dfr_bind(this, 'resolve', cb);
-		}
-		return this;
-	},
-	fail (cb) {
-		if (cb == null) 
-			return this;
-		if (this.rejected) {
-			cb.apply(null, this.rejected);
-			return this;
-		}
-		if (this.resolved == null) {
-			dfr_bind(this, 'reject', cb);
-		}
-		return this;
-	},
-	always (cb) {
-		if (cb == null) 
-			return this;
-		if (this.rejected || this.resolved) {
-			cb();
-			return this;
-		}
-		dfr_bind(this, 'always', cb);
-		return this;
-	},
-	then (ok, fail) {
-		return this.done(ok).fail(fail);
-	},
-
-};
+	}
+}, Dfr.prototype);

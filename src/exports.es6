@@ -25,6 +25,7 @@ function assert_TestDom (container, utest, callback) {
 // import ./runners/jQueryActions.es6
 
 // import ./options.es6
+// import ./Dfr.es6
 // import ./Reporter.es6
 // import ./Runner.es6
 // import ./compo.es6

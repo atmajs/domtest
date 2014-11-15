@@ -24,18 +24,42 @@ _using [MaskJS](https://github.com/atmajs/MaskJS) syntax_
 	- DomTest
 	
 		```javascript
-		DomTest(Element, MaskTestSuite): IPromise<Runner>
+		DomTest(Element: Node, MaskTestSuite: String): IPromise<Runner>
 		```
 		
 		Returns an object with `Promise` interface, and resolves when the test case is complete.
 	
-#### Test Suite Syntax
+	- Component test
+	
+		If you use MaskJS for the application, it simplifies component and template testings
+		
+		```javascript
+		DomTest.compo(template, ?model): IPromise;
+		```
+		_E.g._
+		```javascript
+		DomTest.compo(`
+			section #content {
+				:profile;
+			}
+			:utest {
+				// binding test
+				with (input.profile-name) > do type FooName;
+				with (model) {
+					eq name FooName;
+				}
+			}
+		`);
+		```
+		
+		
+### Test Suite Syntax
 
 _Refer to the MaskJS syntax spec._
 
 Each node performs some action: test/manipulate/etc.
 
-##### Traverse
+#### Traverse
 
 _Refer to jQuery traverse functions._
 
@@ -58,7 +82,7 @@ find (div > span) {
 }
 ```
 
-##### jQuery Tests
+#### jQuery Tests
 
 _Refer to jQuery getter functions._
 
@@ -90,7 +114,7 @@ _Refer to jQuery getter functions._
 	// calls attr('id') function on the elements in the scope and check if equal to 'Baz'
 	```
 
-##### Simulation
+#### Simulation
 
 Credits to:
 - [jQuery-Simulate](https://github.com/jquery/jquery-simulate)
@@ -111,8 +135,20 @@ do press('ctrl+c');
 do type('Hello');
 ```
 
+##### Actions
 
-##### Debug
+- Dom events
+	`mousemove`, `mousedown`, `mouseup`, `click`, dblclick`, `mouseover`, `mouseout`, `mouseenter`, `mouseleave`, `contextmenu`
+
+- Simulate
+	| Action | Arguments | Description |
+	|--------|-----------| ------------|
+	|`press` | (Char|String)  | Press a key or combination. Letters are case sensitive |
+	|`type`  | (String) | Simulates user typing |
+	|`select`| (String) | Search for an option by text or attribute(`value`, `name`, `id`) and select this |
+	
+
+#### Debug
 You may want to stop on some elements to inspect them in developer tools:
 ```
 children (li) {

@@ -140,6 +140,24 @@ UTest({
 		`;
 		
 		return DomTest(div, test);
+	},
+	
+	'"select" test' () {
+		var div = mask.render(`
+			select .foo {
+				option > 'A'
+				option > 'B'
+			}
+		`);
+		var test = `
+			with (.foo) {
+				prop('selectedIndex', 0);
+				
+				do select B;
+				prop('selectedIndex', 1);
+			}
+		`;
+		return DomTest(div, test);
 	}
 	
 });

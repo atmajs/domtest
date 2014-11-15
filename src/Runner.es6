@@ -5,14 +5,18 @@ function Runner(container, node, model, compo) {
 	
 	this.model = model;
 	this.compo = compo;
+	this.$ = $(container);
 	this.stack = [{
-		$: $(container),
+		$: this.$,
 		node: node
 	}];
 	
+	if (this.$.length === 0) {
+		__assert(false, 'No elements to test <root>');
+	}
+	
 	this.process = this.process.bind(this);
 	this.backtrace = new Error().stack;
-	
 }
 
 Runner.prototype = obj_extend({
@@ -147,5 +151,23 @@ Runner.prototype = obj_extend({
 		
 		error.generatedMessage = false;
 		return error;
+	},
+	
+	ensureInDom_ () {
+		this.ensureInDom_ = function(){};
+		var parent = this.$.get(0).parentNode,
+			inPage = false;
+		while(parent != null) {
+			if (parent.nodeType === Node.DOCUMENT_NODE) {
+				inPage = true;
+				break;
+			}
+			parent = parent.parentNode;
+		}
+		if (inPage) 
+			return;
+		
+		this.$.appendTo('body');
+		this.done(() => this.$.remove());
 	}
 }, Dfr.prototype);

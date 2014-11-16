@@ -89,7 +89,7 @@ _Refer to jQuery getter functions._
 - `eq`, `notEq`, `deepEq`, `notDeepEq`, `has`, `hasNot`
 
 	```sass
-	testFn (jQueryKey, [...jquery_arguments], value)
+	testFn (jQueryKey, [...jquery_arguments], testValue)
 	```
 	Example:
 	```sass
@@ -114,6 +114,23 @@ _Refer to jQuery getter functions._
 	// calls attr('id') function on the elements in the scope and check if equal to 'Baz'
 	```
 
+	_Need more simple write-read?_
+	
+	You can also eliminate the parentheses and the quotation marks (_without whitespace_)
+	```javascript
+	attr('id', 'Baz');
+	// >
+	attr id Baz;
+	
+	eq('length', 2);
+	// >
+	eq length 2;
+	// or (as `eq` is default)
+	length 2;
+	```
+	
+	
+
 #### Simulation
 
 Credits to:
@@ -128,7 +145,7 @@ Examples:
 // simulate click
 do click;
 
-// simulate press (even combinations)
+// simulate press (_also combinations_)
 do press('ctrl+c');
 
 // simulate user type
@@ -138,13 +155,14 @@ do type('Hello');
 ##### Actions
 
 - Dom events
-	`mousemove`, `mousedown`, `mouseup`, `click`, dblclick`, `mouseover`, `mouseout`, `mouseenter`, `mouseleave`, `contextmenu`
+	`mousemove`, `mousedown`, `mouseup`, `click`, `dblclick`, `mouseover`, `mouseout`, `mouseenter`, `mouseleave`, `contextmenu`
 
 - Simulate
+
 	| Action | Arguments | Description |
 	|--------|-----------| ------------|
-	|`press` | (Char|String)  | Press a key or combination. Letters are case sensitive |
-	|`type`  | (String) | Simulates user typing |
+	|`press` | (Char/String)  | Press a key or combination. Letters are case sensitive |
+	|`type`  | (String) | Simulate user typing |
 	|`select`| (String) | Search for an option by text or attribute(`value`, `name`, `id`) and select this |
 	
 
@@ -185,18 +203,18 @@ await('section.about') {
  * Test Suite:
  */
 
-with (.foo)  {
-	text('Foo');
-	hasClass('baz', true);
+find (.foo)  {
+	text Foo;
+	hasClass baz;
 	do click;
 }
 
-with (input) {
-	val('A');
-	do press ('BACKSPACE');
+find (input) {
+	val A;
+	do press backspace;
 	
-	do type('Baz');
-	val('Baz');
+	do type Baz ;
+	val Baz;
 }
 
 ```

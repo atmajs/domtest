@@ -1,7 +1,8 @@
 function Runner(container, node, model, compo) {
 	
-	if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) 
+	if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
 		container = container.childNodes;
+	}
 	
 	this.model = model;
 	this.compo = compo;
@@ -23,6 +24,28 @@ Runner.prototype = obj_extend({
 	
 	getCurrent_ () {
 		return this.stack[this.stack.length - 1];
+	},
+	getCurrentModel_ () {
+		var el = this.getCurrent_().$;
+		if (el.model) {
+			return el.model() || this.model;
+		}
+		return this.model;
+	},
+	getCurrentCompo_ () {
+		var el = this.getCurrent_().$;
+		if (el.compo) {
+			return el.compo() || this.compo;
+		}
+		return this.compo;
+	},	
+	getCurrentArgs_ () {
+		var current = this.getCurrent_();
+		return node_evalMany(
+			current.node,
+			this.getCurrentModel_(),
+			this.getCurrentCompo_()
+		);
 	},
 	
 	getNext_ (goDeep) {
@@ -87,17 +110,23 @@ Runner.prototype = obj_extend({
 			return;
 		}
 		
-		var args = node_evalMany(current.node, this.model, this.compo);
-		var $el = current.$;
+		var args = this.getCurrentArgs_();
+		var ctx = current.$;
 		
-		var fn = assert_getFn(name);
-		if (fn) {
-			this.run_(fn, [ $el, name, args, current.node.attr ]);
+		if (is_JQuery(ctx)) {
+			var fn = assert_getFn(name);
+			if (fn) {
+				this.run_(fn, [ ctx, name, args, current.node.attr ]);
+				this.process();
+				return;
+			}
+			
+			log_error('Uknown test function: ', name);
 			this.process();
 			return;
-		}
+		} 
 		
-		log_error('Uknown test function: ', name);
+		assert_test(ctx, name, args);
 		this.process();
 	},
 	

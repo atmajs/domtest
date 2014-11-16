@@ -2,6 +2,14 @@ var Actions;
 (function(){
 	Actions = {
 		'with' (runner, current, done) {
+			var selector = current.node.expression.trim();
+			switch (selector) {
+				case 'model':
+					current.$ = runner.getCurrentModel_();
+					done();
+					return;
+			}
+			
 			Traverser.find(current);
 			done();
 		},

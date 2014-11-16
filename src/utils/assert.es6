@@ -2,13 +2,14 @@ var assert_isAlias,
 	assert_runAlias,
 	assert_isJQuery,
 	assert_runJQuery,
-	assert_getFn;
+	assert_getFn,
+	
+	assert_test;
 
 (function(){
 	
 	assert_isAlias = function (name) {
 		return $.fn[name] != null;
-		
 	};
 	assert_runAlias = function ($el, name, args, attr) {
 		var mix = $el[name];
@@ -37,5 +38,14 @@ var assert_isAlias,
 			if (check(name)) 
 				return fn;
 		}
+	};
+	
+	assert_test = function(ctx, name, args) {
+		if (typeof assert[name] !== 'function') {
+			ctx = ctx[name];
+			name = 'equal';
+		}
+		
+		assert[name].apply(assert, [ ctx ].concat(args));
 	};
 }());

@@ -1,17 +1,33 @@
-function assert_TestDom (container, utest, callback) {
+function assert_TestDom (container, utest, ...args) {
 	if (typeof utest === 'string') {
 		utest = mask.parse(utest);
 		if (utest.type !== mask.Dom.FRAGMENT) 
 			utest = { nodes: [ utest ] };
 	}
 	
-	var runner = new Runner(container, utest);
+	var model, compo, callback,
+		i = 0, imax = args.length, x;
+	for(; i < imax; i++) {
+		x = args[i];
+		if (typeof x === 'function') {
+			callback = x;
+			continue;
+		}
+		if (model != null) {
+			compo = x;
+			continue;
+		}
+		model = x;
+	}
+	
+	var runner = new Runner(container, utest, model, compo);
 	runner.process();
 	runner.always(callback);
 	
 	return runner;
 }
 
+// import ./utils/is.js
 // import ./utils/object.js
 // import ./utils/log.es6
 // import ./utils/dfr.es6

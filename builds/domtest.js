@@ -33,6 +33,7 @@
 }(this, function(global, mask, $, __assert){
 	'use strict';
 	
+	// import /bower_components/assertion/lib/assert.embed.js
 	// import /src/exports.es6
 	
 	return assert_TestDom;

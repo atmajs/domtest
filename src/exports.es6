@@ -21,9 +21,10 @@ function assert_TestDom (container, utest, ...args) {
 	}
 	
 	var runner = new Runner(container, utest, model, compo);
-	runner.process();
-	runner.always(callback);
 	
+	runner.on('complete', callback);
+	
+	setTimeout(runner.process);
 	return runner;
 }
 
@@ -39,12 +40,17 @@ function assert_TestDom (container, utest, ...args) {
 // import ./runners/Simulate.es6
 // import ./runners/Actions.es6
 // import ./runners/jQueryActions.es6
+// import ./runners/Events.es6
 
 // import ./options.es6
 // import ./Dfr.es6
+// import ./EventEmitter.es6
 // import ./Reporter.es6
 // import ./Runner.es6
 // import ./compo.es6
 
 assert_TestDom.create = assert_TestDom;
 assert_TestDom.compo  = compo_domtest;
+assert_TestDom.ProgressReporters = {
+	Dom: ProgressReporter_DOM
+};

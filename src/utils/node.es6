@@ -9,7 +9,7 @@ var node_evalMany,
 	
 	node_eval = function(...args){
 		args.unshift(mask.Utils.Expression.eval);
-		return run.apply(null, args);
+		return run.apply(null, args)[0];
 	};
 	
 	

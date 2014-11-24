@@ -1,4 +1,6 @@
-var Reporter;
+var Reporter,
+	ProgressReporter_DOM;
+
 (function(){
 	Reporter = {
 		report (error, runner) {
@@ -21,6 +23,31 @@ var Reporter;
 			
 			if (error) {
 				throw error;
+			}
+		}
+	};
+	
+	ProgressReporter_DOM = function(el){
+		var lines = [];
+		var pre = mask.render(`
+			pre > +each(.) > div {
+				span style='color: ~[: errored ? "red" : "green"]' > '~[hint]'
+				span > '~[text]'
+			}
+		`, lines);
+		el.appendChild(pre);
+		
+		return function(runner, node, error){
+			lines.push({
+				text: runner.formatCurrentLine_(error),
+				hint: error ? '✘ ' : '✓ ',
+				errored: Boolean(error)
+			});
+			if (error) {
+				lines.push({
+					text: String(error),
+					hint: ' '
+				});
 			}
 		}
 	};

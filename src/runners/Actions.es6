@@ -14,7 +14,7 @@ var Actions;
 			done();
 		},
 		'debugger' (runner, current, done) {
-			var $element = current.$;
+			var ctx = current.$;
 			debugger;
 			done();
 		},
@@ -28,18 +28,12 @@ var Actions;
 			done();
 		},
 		'do' (runner, current, done) {
-			var event = resolveAttrFirst(current.node);
-			
-			runner.ensureInDom_();
-			
-			var fn = Simulate[event];
-			if (fn) {
-				fn(runner, current, done);
-				return;
-			}
-			
-			current.$.simulate(event, current.node.attr);
-			setTimeout(done);
+			Simulate.$$run(
+				resolveAttrFirst(current.node)
+				, runner
+				, current
+				, done
+			);
 		},
 		
 		'call' (runner, current, done) {

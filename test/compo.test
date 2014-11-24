@@ -10,7 +10,6 @@ UTest({
 			}
 		`
 		mask.render(template, null, null, null, compo);
-		
 		return DomTest.compo(compo);
 	},
 	

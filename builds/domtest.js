@@ -2,7 +2,7 @@
 	var _global = typeof global !== 'undefined' ? global : window,
 		_mask = _global.mask || (_global.atma && _global.atma.mask),
 		_$ = _global.jQuery || _global.$,
-		_assert = _global.assert;
+		_assert = _global.assert || {};
 
 	function construct () {
 		var err;
@@ -25,7 +25,7 @@
 			return;
 		}
 		
-		global.DomTest = fn;
+		_global.DomTest = fn;
 	}
 	
 	construct();

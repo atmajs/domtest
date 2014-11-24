@@ -13,15 +13,22 @@ function Runner(container, node, model, compo) {
 	}];
 	
 	if (this.$.length === 0) {
-		__assert(false, 'No elements to test <root>');
+		this.report_(Error('No elements to test <root>'));
 	}
 	
+	this.errors = [];
 	this.process = this.process.bind(this);
+	this.next_ = this.next_.bind(this);
+	
 	this.backtrace = new Error().stack;
 }
 
-Runner.prototype = obj_extend({
+Runner.prototype = {
 	
+	attachReporter (Reporter) {
+		new Reporter(this);
+		return this;
+	},
 	getCurrent_ () {
 		return this.stack[this.stack.length - 1];
 	},
@@ -90,7 +97,13 @@ Runner.prototype = obj_extend({
 	process: function assert_TestDom (error) {
 		var current = this.getNext_(error == null);
 		if (current == null) {
-			this.resolve();
+			this.emit('complete', this.errors);
+			
+			if (this.errors.length) {
+				this.reject(this.errors);
+			} else {
+				this.resolve();
+			}
 			return;
 		}
 		
@@ -99,14 +112,18 @@ Runner.prototype = obj_extend({
 		var traverser = Traverser[name];
 		if (traverser) {
 			var error = this.run_(traverser, [current]);
-			
-			this.process(error);
+			this.next_(error);
+			return;
+		}
+		
+		if (Events.indexOf(name) !== -1) {
+			this.run_(Simulate.$$run, [ name, this, current, this.next_ ]);
 			return;
 		}
 		
 		var action = Actions[name];
 		if (action) {
-			this.run_(action, [this, current, this.process]);
+			this.run_(action, [this, current, this.next_]);
 			return;
 		}
 		
@@ -116,18 +133,23 @@ Runner.prototype = obj_extend({
 		if (is_JQuery(ctx)) {
 			var fn = assert_getFn(name);
 			if (fn) {
-				this.run_(fn, [ ctx, name, args, current.node.attr ]);
-				this.process();
+				var err = this.run_(fn, [ ctx, name, args, current.node.attr ]);
+				this.next_(err);
 				return;
 			}
 			
 			log_error('Uknown test function: ', name);
-			this.process();
+			this.next_();
 			return;
 		} 
 		
-		assert_test(ctx, name, args);
-		this.process();
+		var err = this.run_(assert_test, [ctx, name, args]);
+		this.next_(err);
+	},
+	
+	next_ (error) {
+		this.emit('progress', this, this.getCurrent_().node, error);
+		this.process(error);
 	},
 	
 	run_ (fn, args, ctx) {
@@ -143,11 +165,33 @@ Runner.prototype = obj_extend({
 		if (error != null && typeof next === 'function') {
 			next(error);
 		}
+		return error;
 	},
 	
 	report_ (error) {
 		error = this.prepairError_(error);
-		Reporter.report(error);
+		Reporter.report(error, this);
+		
+		this.emit(error ? 'fail' : 'success', error);
+		if (error) {
+			this.errors.push(error);
+		}
+	},
+	
+	formatCurrentLine_ (error) {
+		var node = this.getCurrent_().node,
+			indent = '';
+		
+		var parent = node.parent;
+		while (parent != null && parent.type !== mask.Dom.FRAGMENT) {
+			indent += '  ';
+			parent = parent.parent;
+		}
+		return indent + mask.stringify({
+			tagName: node.tagName,
+			attr: node.attr,
+			expression: node.expression
+		}, 2).slice(0, -1);
 	},
 	
 	prepairError_ (error) {
@@ -161,18 +205,8 @@ Runner.prototype = obj_extend({
 			tmpl = lines.splice(0, 6).join('\n');
 		}
 		
-		var msg = error.generatedMessage
-			? tmpl
-			: error.message + '\n' + tmpl;
-			
-		Object.defineProperty(error, 'message', {
-			value: msg,
-			writable: true,
-			enumerable: true,
-			configurable: true
-		});
 		Object.defineProperty(error, 'stack', {
-			value: assert.prepairStack(this.backtrace),
+			value: tmpl + '\n' + assert.prepairStack(this.backtrace),
 			writable: true,
 			enumerable: true,
 			configurable: true
@@ -199,4 +233,7 @@ Runner.prototype = obj_extend({
 		this.$.appendTo('body');
 		this.done(() => this.$.remove());
 	}
-}, Dfr.prototype);
+};
+
+obj_extend(Runner.prototype, EventEmitter.prototype);
+obj_extend(Runner.prototype, Dfr.prototype);

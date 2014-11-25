@@ -12,6 +12,10 @@ module.exports = {
 			}
 		}
 	},
+	'add-handlers': {
+		action: 'custom',
+		script: 'tools/license-handler.js'
+	},
 	'import': {
 		files: 'builds/**',
 		output: 'lib/',

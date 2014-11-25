@@ -26,21 +26,22 @@ UTest({
 		`);
 	},
 	
-	'embeded javascript' () {
+	'embeded javascript' (done) {
 		var div = mask.render(`
 			div > section > 'Foo'
 		`);
-		
-		DomTest(div, `
+		var tmpl = `
 			eq('prop', 'tagName', 'DIV');
 			
 			find (section) {
-				slot changeText ($el) {
+				slot changeText ($el, assert) {
 					$el.text('Baz');
+					assert.equal(2, 2);
 				}
 				eq('text', 'Baz');
 			}
-		`);
+		`;
+		return DomTest(div, tmpl);
 	},
 	'await timeout' () {
 		var div = mask.render('div');

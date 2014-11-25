@@ -20,11 +20,11 @@ var Actions;
 		},
 		'slot' (runner, current, done) {
 			var fn = current.node.fn;
-			if (fn.length === 2) {
-				fn(current.$, done);
+			if (fn.length === 3) {
+				fn(current.$, runner.wrapAssertion_(), done);
 				return;
 			}
-			fn(current.$);
+			fn(current.$, runner.wrapAssertion_());
 			done();
 		},
 		'do' (runner, current, done) {

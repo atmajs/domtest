@@ -21,6 +21,7 @@ function Runner(container, node, model, compo) {
 	this.next_ = this.next_.bind(this);
 	
 	this.backtrace = new Error().stack;
+	
 }
 
 Runner.prototype = {
@@ -232,6 +233,26 @@ Runner.prototype = {
 		
 		this.$.appendTo('body');
 		this.done(() => this.$.remove());
+	},
+	
+	assert: null,
+	wrapAssertion_ () {
+		if (this.assert != null) 
+			return this.assert;
+		
+		var wrap = (key) => 
+			(...args) =>
+				this.run_(key && assert[key] || assert, args)
+		;
+		
+		this.assert = wrap();
+		
+		for (var key in assert) {
+			if (typeof assert[key] === 'function') {
+				this.assert[key] = wrap(key);
+			}
+		}
+		return this.assert;
 	}
 };
 

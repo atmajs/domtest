@@ -1,3 +1,5 @@
+// import /src/license.txt
+
 (function(root, factory){
 	var _global = typeof global !== 'undefined' ? global : window,
 		_mask = _global.mask || (_global.atma && _global.atma.mask),

@@ -1,0 +1,22 @@
+UTest({
+	'standalone' (done) {		
+		UTest
+			.server
+			.request('/examples/standalone.html')
+			.done(document => {
+				$(document)
+					.find('#btn-run')
+					.click()
+					;
+				
+				setTimeout(() => {
+					$(document)
+						.find('.reporter.__global')
+						.eq_('text', ' ok  ok  ok  ok  ok  ok  ok  ok  ok  ok  ok ');
+						
+					done();
+				}, 500);
+				
+			});
+	}
+})

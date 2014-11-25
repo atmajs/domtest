@@ -24,7 +24,7 @@ function assert_TestDom (container, utest, ...args) {
 	
 	runner.on('complete', callback);
 	
-	setTimeout(runner.process);
+	simulate_ready(runner.process);
 	return runner;
 }
 
@@ -34,7 +34,7 @@ function assert_TestDom (container, utest, ...args) {
 // import ./utils/dfr.es6
 // import ./utils/node.es6
 // import ./utils/assert.es6
-
+// import ./utils/simulate.es6
 
 // import ./runners/Traverser.es6
 // import ./runners/Simulate.es6

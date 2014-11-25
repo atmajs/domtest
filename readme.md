@@ -4,7 +4,7 @@
 [![NPM version](https://badge.fury.io/js/domtest.svg)](http://badge.fury.io/js/domtest)
 [![Bower version](https://badge.fury.io/bo/domtest.svg)](http://badge.fury.io/bo/domtest)
 
-Describe DOM Tests with ease. Based on `MaskJS` syntax, `jQuery`s API and user input simulations. _Unit-tests for the UI, but also perfect for continuous integration tests_.
+Describe DOM Tests with ease, less code, and less words. Based on `MaskJS` syntax, `jQuery`s API and user input simulations. _Unit-test the UI, but also perfect for integration tests_.
 > This is not the test runner, you may want to use one, like `Karma`
 
 

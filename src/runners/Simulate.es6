@@ -45,6 +45,7 @@ var Simulate;
 			if (el.length !== 0) {
 				var str = node_eval(current.node);
 				select_Option(el, str, done);
+				setTimeout(done);
 				return;
 			}
 			
@@ -62,7 +63,7 @@ var Simulate;
 		}
 	};	
 
-	function select_Option (el, str, done) {
+	function select_Option (el, str) {
 		var opts,
 			opt = find(byText);
 		if (opt == null)  opt = find(byAttr('value'));
@@ -76,8 +77,6 @@ var Simulate;
 		el.get(0).selectedIndex = index;
 		$opt.simulate('click');
 		el.trigger('change');
-		
-		setTimeout(done);
 		
 		function byText ($el, i) {
 			var txt = $el.text();

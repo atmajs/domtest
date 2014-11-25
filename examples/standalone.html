@@ -63,7 +63,7 @@
 			DomTest.config({
 				report: function(error){
 					$$('.reporter.__global').textContent += ' '
-						+ (error && '✘' || '✓')
+						+ (error && 'fail' || 'ok')
 						+ ' '
 						;
 				}
@@ -78,6 +78,7 @@
 				$$('.reporter.__complete').textContent = errors.length + ' Error(s)';
 			})
 		}
+		
 	</script>
 </head>
 

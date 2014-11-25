@@ -40,6 +40,7 @@ find (input) {
 - [Debugging](#debugging)
 - [Async](#async)
 - [Manipulation](#manipulation)
+- [Javascript](#javascript)
 - [Examples](#examples)
 
 ### Install
@@ -235,7 +236,7 @@ await('section.about') {
 }
 ```
 
-#### Manipulation
+### Manipulation
 `call`: call a jQuery function to modify current elemens
 > _rarely used_, as usually all dom modifications are performed within some handlers
 
@@ -245,6 +246,23 @@ call text Foo
 // This sets textContent to 'Foo' (not the assertion)
 ```
 
+### Javascript
+`slot`: is an embedded javascript block to execute. _Can cover any need_
+```javascript
+// sync version
+slot name ($ctx, assert) { /*...*/ }
+
+// async version
+slot name ($ctx, assert, done) {/*...*/}
+
+find (input) {
+	slot checkFoo ($input, assert) {
+		// just a simple js demo
+		var foo = someFooFunction($input);
+		assert.equal(foo, 3)
+	}
+}
+```
 
 ### Examples
 [/examples](./examples)

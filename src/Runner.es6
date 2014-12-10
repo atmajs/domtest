@@ -3,6 +3,9 @@ function Runner(container, node, model, compo) {
 	if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
 		container = container.childNodes;
 	}
+	if (container.nodeType === Node.DOCUMENT_NODE) {
+		container = container.body;
+	}
 	
 	this.model = model;
 	this.compo = compo;

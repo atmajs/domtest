@@ -8,7 +8,7 @@ var node_evalMany,
 	};
 	
 	node_eval = function(...args){
-		args.unshift(mask.Utils.Expression.eval);
+		args.unshift(mask.Utils.Expression.evalStatements);
 		return run.apply(null, args)[0];
 	};
 	
@@ -25,7 +25,6 @@ var node_evalMany,
 			}
 			if (arr.length !== 0) 
 				return arr;
-			
 			
 			var obj = {}, count = 0;
 			for(var key in attr) {

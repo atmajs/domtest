@@ -27,7 +27,7 @@ var DomTest;
 		return;
 	}
 	
-	// import /bower_components/jquery-simulate-ext/libs/bililiteRange.js
+	// import /vendor/bililiteRange.js
 	// import /bower_components/jquery-simulate-ext/libs/jquery.simulate.js
 	// import /bower_components/jquery-simulate-ext/src/jquery.simulate.ext.js
 	// import /bower_components/jquery-simulate-ext/src/jquery.simulate.drag-n-drop.js

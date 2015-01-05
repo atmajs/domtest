@@ -16,7 +16,7 @@ var Traverser = {};
 			var selector = current.node.expression;
 			
 			if (/^\s*('|")/.test(selector)) {
-				selector = node_eval(selector);
+				selector = node_eval(current.node);
 			}
 			
 			var x = current.$[name](selector);

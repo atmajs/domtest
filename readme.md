@@ -15,7 +15,7 @@ Assume this DOM
 <input value='A' />
 ```
 Test suite sample:
-```sass
+```mask
 find (.foo)  {
 	text Foo;
 	hasClass baz;
@@ -116,7 +116,7 @@ jQuery property of the current set is used, and in case if the property is the f
 | `gt`, `gte`			 | Greater-Than, Greater-Than-Or-Equal |
 
 
-```sass
+```mask
 assertionFunction (jqueryAccessor, [...arguments], testValue);
 
 eq('text', 'Bar');
@@ -130,7 +130,7 @@ eq('attr', 'id', 'Foo');
 ```
 
 Simplified syntax:
-```sass
+```mask
 assertionFunction jqueryAccessor [...arguments] testValue;
 
 eq text Bar;
@@ -139,7 +139,7 @@ eq attr id Foo;
 ```
 
 `eq` is the default assertion and can be omitted
-```sass
+```mask
 jqueryAccessor [...arguments] testValue
 
 text Bar;
@@ -158,13 +158,13 @@ _Refer to jQuery traverse functions._
 All assertions, like all other actions, are called in a current jQuery context. From the start on this is equal to the root element(s) (_see the `DomTest` function_).
 With the traverse functions you select new elements for the current context. They will throw also an error if no elements can't be found.
 
-```sass
+```mask
 traverseFunction (selector) {
 	// ... assertoions, etc
 }
 ```
 Example:
-```sass
+```mask
 find (div > span) {
 	data id Foo;
 	
@@ -182,7 +182,7 @@ find (div > span) {
 
 Triggers an event or simulates user interaction
 
-```sass
+```mask
 do ActionName (...arguments);
 ```
 
@@ -213,7 +213,7 @@ do type ('Hello World');
 
 ### Debugging
 `debugger`: stop on some element(s) to inspect them in developer tools:
-```sass
+```mask
 children (li) {
 	debugger;
 }
@@ -223,7 +223,7 @@ children (li) {
 ### Async
 `async`: wait some time or wait until some element appears in the dom.
 For instance, when there is some async calls after button click action
-```sass
+```mask
 await (selector);
 await (number);
 ```
@@ -240,7 +240,7 @@ await('section.about') {
 `call`: call a jQuery function to modify current elemens
 > _rarely used_, as usually all dom modifications are performed within some handlers
 
-```sass
+```mask
 call text('Foo'); // or simpler(no whitespace in the text)
 call text Foo
 // This sets textContent to 'Foo' (not the assertion)

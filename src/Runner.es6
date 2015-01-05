@@ -15,16 +15,14 @@ function Runner(container, node, model, compo) {
 		node: node
 	}];
 	
-	if (this.$.length === 0) {
-		this.report_(Error('No elements to test <root>'));
-	}
-	
 	this.errors = [];
 	this.process = this.process.bind(this);
 	this.next_ = this.next_.bind(this);
 	
 	this.backtrace = new Error().stack;
-	
+	if (this.$.length === 0) {
+		this.report_(Error('No elements to test <root>'));
+	}
 }
 
 Runner.prototype = {

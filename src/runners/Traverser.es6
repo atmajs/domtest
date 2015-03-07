@@ -1,17 +1,17 @@
 var Traverser = {};
 (function(){
 	[
-		['find', 'filter'],
+		['find', 'filter', findNative],
 		['filter'],
 		['closest'],
 		['children'],
 		['siblings']
 	].forEach( x => {
-		var [name, fallback] = x;
-		Traverser[name] = create(name, fallback);
+		var [name, fallback, customFn] = x;
+		Traverser[name] = create(name, fallback, customFn);
 	});
 	
-	function create(name, fallback) {
+	function create(name, fallback, customFn) {
 		return function assert_Traverse(current) {
 			var selector = current.node.expression;
 			
@@ -20,8 +20,11 @@ var Traverser = {};
 			}
 			
 			var x = current.$[name](selector);
-			if (fallback && x.length === 0) {
+			if (x.length === 0 && fallback) {
 				x = current.$[fallback](selector);
+			}
+			if (x.length === 0 && customFn) {
+				x = customFn(current.$, selector);
 			}
 			assert.notEqual(
 				x.length
@@ -30,5 +33,16 @@ var Traverser = {};
 			);
 			current.$ = x;
 		};
+	}
+	
+	function findNative($el, selector){
+		var set = $(),
+			imax = $el.length,
+			i = -1, arr;
+		while( ++i < imax ){
+			arr = $el[i].querySelectorAll(selector);
+			set = set.add(arr);
+		}
+		return set;
 	}
 }());

@@ -17,7 +17,7 @@ var compo_domtest;
 	function test (compo) {
 		var u = compo.findAll(':utest'),
 			count = u.length,
-			dfr = new Dfr;
+			dfr = new class_Dfr;
 		
 		if (count === 0) {
 			__assert(false, 'No `:utest` components found');

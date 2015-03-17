@@ -11,6 +11,10 @@ var Traverser = {};
 		Traverser[name] = create(name, fallback, customFn);
 	});
 	
+	obj_extend(Traverser, {
+		'__eq__': create('eq')
+	});
+	
 	function create(name, fallback, customFn) {
 		return function assert_Traverse(current) {
 			var selector = current.node.expression;

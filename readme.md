@@ -278,6 +278,21 @@ atma server
 # navigate to e.g. `http://localhost:5777/examples/standalone.html`
 ```
 
+
+### Contribute
+#### Build
+```bash
+$ npm install
+$ bower install
+$ git submodule update --recursive
+$ npm build
+```
+
+#### Test
+```bash
+npm test
+```
+
 ----
 
 Credits to:

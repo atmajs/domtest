@@ -1,7 +1,9 @@
 /**
  *	Build: Run Atma.js Toolkit
- *  ``` > npm install atma ```
- *	``` > atma```
+ *  $ npm install
+ *  $ bower install
+ *  $ git submodule update --recursive
+ *  $ npm build
  **/
 
 module.exports = {
@@ -39,7 +41,7 @@ module.exports = {
 		config: '#[import]'
 	},
 	
-	'defaults': ['add-handlers', 'import', 'jshint', 'uglify']
+	'defaults': ['add-handlers', 'import', 'uglify']
 };
 
 function JSHint() {

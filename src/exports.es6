@@ -1,3 +1,5 @@
+// import /ref-utils/lib/utils.embed.js
+
 function assert_TestDom (container, utest, ...args) {
 	if (typeof utest === 'string') {
 		utest = mask.parse(utest);
@@ -43,8 +45,6 @@ function assert_TestDom (container, utest, ...args) {
 // import ./runners/Events.es6
 
 // import ./options.es6
-// import ./Dfr.es6
-// import ./EventEmitter.es6
 // import ./Reporter.es6
 // import ./Runner.es6
 // import ./compo.es6

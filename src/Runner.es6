@@ -1,31 +1,30 @@
-function Runner(container, node, model, compo) {
-	
-	if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-		container = container.childNodes;
-	}
-	if (container.nodeType === Node.DOCUMENT_NODE) {
-		container = container.body;
-	}
-	
-	this.model = model;
-	this.compo = compo;
-	this.$ = $(container);
-	this.stack = [{
-		$: this.$,
-		node: node
-	}];
-	
-	this.errors = [];
-	this.process = this.process.bind(this);
-	this.next_ = this.next_.bind(this);
-	
-	this.backtrace = new Error().stack;
-	if (this.$.length === 0) {
-		this.report_(Error('No elements to test <root>'));
-	}
-}
-
-Runner.prototype = {
+var Runner = class_create(class_EventEmitter, class_Dfr, {
+	constructor: function Runner(container, node, model, compo) {
+		
+		if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+			container = container.childNodes;
+		}
+		if (container.nodeType === Node.DOCUMENT_NODE) {
+			container = container.body;
+		}
+		
+		this.model = model;
+		this.compo = compo;
+		this.$ = $(container);
+		this.stack = [{
+			$: this.$,
+			node: node
+		}];
+		
+		this.errors = [];
+		this.process = this.process.bind(this);
+		this.next_ = this.next_.bind(this);
+		
+		this.backtrace = new Error().stack;
+		if (this.$.length === 0) {
+			this.report_(Error('No elements to test <root>'));
+		}
+	},
 	
 	attachReporter (Reporter) {
 		new Reporter(this);
@@ -110,7 +109,6 @@ Runner.prototype = {
 		}
 		
 		var name = current.node.tagName;
-		
 		var traverser = Traverser[name];
 		if (traverser) {
 			var error = this.run_(traverser, [current]);
@@ -131,6 +129,13 @@ Runner.prototype = {
 		
 		var args = this.getCurrentArgs_();
 		var ctx = current.$;
+		
+		if (name === 'eq' && args.length === 1) {
+			var traverser = Traverser.__eq__;
+			var error = this.run_(traverser, [current]);
+			this.next_(error);
+			return;
+		}
 		
 		if (is_JQuery(ctx)) {
 			var fn = assert_getFn(name);
@@ -255,7 +260,4 @@ Runner.prototype = {
 		}
 		return this.assert;
 	}
-};
-
-obj_extend(Runner.prototype, EventEmitter.prototype);
-obj_extend(Runner.prototype, Dfr.prototype);
+});

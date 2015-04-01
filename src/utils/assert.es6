@@ -12,6 +12,13 @@ var assert_isAlias,
 		return $.fn[name] != null;
 	};
 	assert_runAlias = function ($el, name, args, attr) {
+		if ($el.eq_ != null) {
+			// use jQuery assertion extension
+			args.unshift(name);
+			$el.eq_.apply($el, args);
+			return;
+		}
+		
 		var mix = $el[name];
 		var expect = args.pop();
 		if (typeof mix === 'function') {

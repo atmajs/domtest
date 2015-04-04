@@ -42,9 +42,11 @@ var Traverser = {};
 	function findNative($el, selector){
 		var set = $(),
 			imax = $el.length,
-			i = -1, arr;
+			i = -1, arr, x;
 		while( ++i < imax ){
-			arr = $el[i].querySelectorAll(selector);
+			x = $el[i];
+			if (x.querySelectorAll == null) continue;
+			arr = x.querySelectorAll(selector);
 			set = set.add(arr);
 		}
 		return set;

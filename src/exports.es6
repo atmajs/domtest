@@ -26,7 +26,8 @@ function assert_TestDom (container, utest, ...args) {
 	
 	runner.on('complete', callback);
 	
-	simulate_ready(runner.process);
+	// wait 5 Ticks and run, jQuery.simulate workarounds
+	eventLoop_skip5(runner.process);
 	return runner;
 }
 
@@ -36,7 +37,7 @@ function assert_TestDom (container, utest, ...args) {
 // import ./utils/dfr.es6
 // import ./utils/node.es6
 // import ./utils/assert.es6
-// import ./utils/simulate.es6
+// import ./utils/eventLoop.es6
 
 // import ./runners/Traverser.es6
 // import ./runners/Simulate.es6

@@ -1,6 +1,6 @@
 // Cross-broswer implementation of text ranges and selections
 // documentation: http://bililite.com/blog/2011/01/17/cross-browser-text-ranges-and-selections/
-// Version: 2.5.1
+// Version: 2.6
 // Copyright (c) 2013 Daniel Wachsstock
 // MIT license:
 // Permission is hereby granted, free of charge, to any person
@@ -203,7 +203,7 @@ Range.prototype = {
 			}
 			rng.text(c, 'end');
 		}
-		text.replace(/{[^}]*}|[^{]+/g, function(part){
+		text.replace(/{[^}]*}|[^{]+|{/g, function(part){
 			(bililiteRange.sendkeys[part] || simplechar)(self, part, simplechar);
 		});
 		this.bounds(this.data().sendkeysBounds);
@@ -324,8 +324,7 @@ bililiteRange.bounds = {
 // sendkeys functions
 bililiteRange.sendkeys = {
 	'{enter}': function (rng){
-		var x = '\n'.charCodeAt(0);
-		rng.dispatch({type: 'keypress', keyCode: x, which: x, charCode: x});
+		simplechar(rng, '\n');
 		rng.insertEOL();
 	},
 	'{tab}': function (rng, c, simplechar){
@@ -370,6 +369,12 @@ bililiteRange.sendkeys = {
 		rng.data().sendkeysBounds = rng.bounds();
 	}
 };
+// Synonyms from the proposed DOM standard (http://www.w3.org/TR/DOM-Level-3-Events-key/)
+bililiteRange.sendkeys['{Enter}'] = bililiteRange.sendkeys['{enter}'];
+bililiteRange.sendkeys['{Backspace}'] = bililiteRange.sendkeys['{backspace}'];
+bililiteRange.sendkeys['{Delete}'] = bililiteRange.sendkeys['{del}'];
+bililiteRange.sendkeys['{ArrowRight}'] = bililiteRange.sendkeys['{rightarrow}'];
+bililiteRange.sendkeys['{ArrowLeft}'] = bililiteRange.sendkeys['{leftarrow}'];
 
 function IERange(){}
 IERange.prototype = new Range();

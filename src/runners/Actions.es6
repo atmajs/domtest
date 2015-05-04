@@ -48,13 +48,16 @@ var Actions;
 		
 		'await' (runner, current, done) {
 			var expression = current.node.expression;
-			var num = parseFloat(expression);
-			if (num === num) {
-				setTimeout(done, num);
+			if (expression == null) {
+				throw Error('`await` node expect expression: timeout ms or a selector');
+			}
+			var mix = mask.Utils.Expression.eval(expression);
+			if (typeof mix === 'number') {
+				setTimeout(done, mix);
 				return;
 			}
 			
-			var selector = expression;
+			var selector = mix;
 			var INTERVAL = 200;
 			var MAX = 1600;
 			var i = 0;

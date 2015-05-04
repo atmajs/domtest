@@ -4,6 +4,8 @@ if (typeof jQuery !== 'undefined') {
 		if ($.simulate && $.simulate.prototype.simulateKeyCombo) {
 			return;
 		}
+
+		global.bililiteRange = null;
 		
 		// import /vendor/bililiteRange.js
 		// import /bower_components/jquery-simulate-ext/libs/jquery.simulate.js

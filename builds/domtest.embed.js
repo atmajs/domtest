@@ -23,5 +23,6 @@ var DomTest;
 	return assert_TestDom;
 }));
 
+/* jQuery simulate failes in 'strict' mode */
 
 // import /src/jquery_simulate.es6

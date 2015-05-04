@@ -20,9 +20,8 @@ var DomTest;
 	
 	// import /src/exports.es6
 	
-	// import /src/jquery_simulate.es6
-	
 	return assert_TestDom;
 }));
 
 
+// import /src/jquery_simulate.es6

@@ -1,4 +1,5 @@
 var Runner = class_create(class_EventEmitter, class_Dfr, {
+	
 	constructor: function Runner(container, node, model, compo) {
 		
 		if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -10,7 +11,9 @@ var Runner = class_create(class_EventEmitter, class_Dfr, {
 		
 		this.model = model;
 		this.compo = compo;
-		this.$ = $(container);
+		
+		var domLib = this.getDomLibrary_(container);
+		this.$ = domLib(container);
 		this.stack = [{
 			$: this.$,
 			node: node
@@ -92,6 +95,23 @@ var Runner = class_create(class_EventEmitter, class_Dfr, {
 			return this.getCurrent_();
 		}
 		return null;
+	},
+	
+	getDomLibrary_ (mix) {
+		var el = mix != null && (typeof mix.length === 'number' ? mix[0] : mix);
+		if (el == null) {
+			return global.$;
+		}
+		
+		var win = el.ownerDocument.defaultView;
+		var $ = win.$
+			|| win.jQuery
+			|| window.$
+			|| window.jQuery
+			|| mask.Compo.config.getDOMLibrary();
+			
+		$.fn.simulate = global.$.fn.simulate;
+		return $;
 	},
 	
 	

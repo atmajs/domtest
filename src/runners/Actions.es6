@@ -36,6 +36,12 @@ var Actions;
 			);
 		},
 		
+		'trigger' (runner, current, done) {
+			var args = node_evalMany(current.node, runner.model, runner.compo);
+			current.$.trigger.apply(current.$, args);
+			setTimeout(done, 16);
+		},
+		
 		'call' (runner, current, done) {
 			var name = resolveAttrFirst(current.node);
 			

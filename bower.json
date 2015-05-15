@@ -1,6 +1,6 @@
 {
   "name": "domtest",
-  "version": "0.10.21",
+  "version": "0.10.22",
   "description": "Helps to perform unit and integration testing on documents and elements",
   "main": "lib/domtest.js",
   "authors": [

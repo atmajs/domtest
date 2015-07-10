@@ -4,9 +4,10 @@
 [![NPM version](https://badge.fury.io/js/domtest.svg)](http://badge.fury.io/js/domtest)
 [![Bower version](https://badge.fury.io/bo/domtest.svg)](http://badge.fury.io/bo/domtest)
 
-Describe DOM Tests with ease, less code, and less words. Based on `MaskJS` syntax, `jQuery`s API and user input simulations. _Unit-test the UI, but also perfect for integration tests_.
-> This is not the test runner, you may want to use one, like `Karma`
+Describe DOM Tests with ease: less code, less words. Based on `MaskJS` syntax, `jQuery`s API and user input simulations. _Unit-test the UI, but also perfect for integration tests_.
+> This is not the test runner, you may want to use one, like `Karma` or [uTest](https://github.com/atmajs/utest)
 
+All statements are of 2 types: **actions** and **assertions**. Any jQuery method which is for getting values is assumed to be an assertion, any event-base mathod is an action.
 
 ##### Sample
 Assume this DOM
@@ -16,17 +17,25 @@ Assume this DOM
 ```
 Test suite sample:
 ```mask
-find (.foo)  {
+// finds all `.foo` elements and sets them for assertion scope
+find ('.foo')  {
+	// check text property
 	text Foo;
 	hasClass baz;
+	// perform action
 	click;
+	// check visibility
 	css display none;
+	// or
+	is hidden;
+	// check bg color
+	css ('background-color', 'red');
 }
-find (input) {
+find ('input') {
 	val A;
 	press backspace;
 	
-	type Baz ;
+	type Baz;
 	val Baz;
 }
 ```

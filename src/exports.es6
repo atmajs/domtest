@@ -1,12 +1,22 @@
 // import /ref-utils/lib/utils.embed.js
 
-function assert_TestDom (container, utest, ...args) {
-	if (typeof utest === 'string') {
-		utest = mask.parse(utest);
-		if (utest.type !== mask.Dom.FRAGMENT) 
-			utest = { nodes: [ utest ] };
+function assert_TestDom (container, mix, ...args) {
+	var arr = mix;
+	if (Array.isArray(mix) === false) {
+		arr = [ mix ];
 	}
-	
+
+	arr = arr.map(function(x){
+		if (typeof x !== 'string') {
+			return x;
+		}
+		var ast = mask.parse(x);
+		if (ast.type !== mask.Dom.FRAGMENT) {
+			ast = { nodes: [ ast ] };
+		}
+		return ast;
+	});
+
 	var model, compo, callback,
 		i = 0, imax = args.length, x;
 	for(; i < imax; i++) {
@@ -21,14 +31,47 @@ function assert_TestDom (container, utest, ...args) {
 		}
 		model = x;
 	}
-	
-	var runner = new Runner(container, utest, model, compo);
-	
-	runner.on('complete', callback);
+
+	function next (error) {
+		if (error) {
+			dfr.reject(error);
+			return;
+		}
+		if (arr.length === 0) {
+			dfr.resolve();
+			return;
+		}
+		var suite = arr.shift();
+		if (typeof suite === 'function') {
+			if (suite.length) {
+				suite(next);
+				return;
+			}
+			try {
+				suite();
+			}
+			catch (error) {
+				next(error);
+				return;
+			}
+			next();
+			return;
+		}
+		var runner = new Runner(container, suite, model, compo);
+		runner
+			.process()
+			.done(() => next())
+			.fail(next);
+	}
+	if (callback != null) {
+		dfr
+			.done(() => callback())
+			.fail(callback);
+	}
 	
 	// wait 5 Ticks and run, jQuery.simulate workarounds
-	eventLoop_skip5(runner.process);
-	return runner;
+	eventLoop_skip5(next);
+	return dfr;
 }
 
 // import ./utils/is.js

@@ -1,6 +1,7 @@
 // import /ref-utils/lib/utils.embed.js
 
 function assert_TestDom (container, mix, ...args) {
+	var dfr = new mask.class.Deferred;
 	var arr = mix;
 	if (Array.isArray(mix) === false) {
 		arr = [ mix ];
@@ -59,7 +60,8 @@ function assert_TestDom (container, mix, ...args) {
 		}
 		var runner = new Runner(container, suite, model, compo);
 		runner
-			.process()
+			.process();
+		runner
 			.done(() => next())
 			.fail(next);
 	}
@@ -68,7 +70,7 @@ function assert_TestDom (container, mix, ...args) {
 			.done(() => callback())
 			.fail(callback);
 	}
-	
+
 	// wait 5 Ticks and run, jQuery.simulate workarounds
 	eventLoop_skip5(next);
 	return dfr;

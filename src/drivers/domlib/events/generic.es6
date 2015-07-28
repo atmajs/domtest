@@ -1,7 +1,5 @@
-var Events;
 (function(){
-	Events = [
-		// DOM
+	([
 		"blur",
 		"focus",
 		"load",
@@ -19,14 +17,19 @@ var Events;
 		"mouseenter",
 		"mouseleave",
 		"change",
-		"select",
 		"submit",
 		"keydown",
 		"keypress",
 		"keyup",
-		
-		// SIMULATE
-		"type",
-		"press"
-	];
+	])
+	.forEach(event => {
+		Driver.prototype.Events.define(event, triggerDelegate(event));
+	});
+
+	function triggerDelegate(event) {
+		return function($, ...args){
+			var fn = $.simulate || $.trigger;
+			fn.call($, event, ...args);
+		};
+	}
 }());

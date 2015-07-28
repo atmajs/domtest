@@ -1,5 +1,5 @@
 if (typeof jQuery !== 'undefined') {
-		
+
 	(function($){
 		if ($.simulate && $.simulate.prototype.simulateKeyCombo) {
 			return;

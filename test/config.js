@@ -2,12 +2,13 @@ module.exports = {
 	suites: {
 		examples : {
 			exec: 'dom',
-			
+
 			env: [
-				'/lib/domtest.embed.js::TestDom'
+				'/lib/domtest.embed.js::TestDom',
+				'/test/domlib/utils.js'
 			],
-			
-			tests: 'test/**.test'
+
+			tests: 'test/domlib/**.test'
 		}
 	}
 };

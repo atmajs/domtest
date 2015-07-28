@@ -4,7 +4,7 @@
 	<script src='../bower_components/jquery/dist/jquery.js'></script>
 	<script src='../bower_components/maskjs/lib/mask.js'></script>
 	<script src='../lib/domtest.js'></script>
-	
+
 	<div style='color: gray'>
 		"Foo" as initial state, then type "Bar" and afterwards reset the input
 	</div>
@@ -12,7 +12,7 @@
 		<input type='text' value='Foo' />
 		<button id='btn-reset' >Reset</button>
 	</section>
-	
+
 	<section>
 		<hr />
 		<button id='btn-run'>Run Test</button>
@@ -21,45 +21,42 @@
 			<hr />
 			<small><tt><i>Global Reporter: </i></tt></small>
 			<div class='reporter __global' ></div>
-			
+
 			<small><tt><i>Complete Reporter: </i></tt></small>
 			<div class='reporter __complete' ></div>
-			
+
 			<small><tt><i>Dom Progress Reporter: </i></tt></small>
 			<div class='reporter __dom' ></div>
 		</div>
 	</section>
-	
+
 	<script type='text/test'>
-		with (section.test) {
-			
+		with ('section.test') {
+
 			hasClass bar;
-			
-			find (input) {
+
+			find ('input') {
 				val Foo;
-				
 				select oo;
 				type Bar;
-				
 				val FBar;
 			}
-			
-			find (button) > click;
-			find (input)  > val Foo;
+			find ('button') > do click;
+			find ('input')  > val Foo;
 		}
 	</script>
 	<script>
-		
+
 		var $$ = document.querySelector.bind(document);
-		
+
 		$('#btn-run').click(Run);
 		$('#btn-reset').click(function(){
 			$(this).siblings('input').val('Foo');
 		});
-		
+
 		function Run() {
 			$('.reporter').text('');
-			
+
 			DomTest.config({
 				report: function(error){
 					$$('.reporter.__global').textContent += ' '
@@ -68,7 +65,7 @@
 						;
 				}
 			});
-			
+
 			DomTest(
 				$$('.test'),
 				$$('[type="text/test"]').textContent
@@ -78,7 +75,7 @@
 				$$('.reporter.__complete').textContent = errors.length + ' Error(s)';
 			})
 		}
-		
+
 	</script>
 </head>
 

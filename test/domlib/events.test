@@ -1,0 +1,52 @@
+UTest({
+	'should click the button' (done) {
+		var dom = mask.render(`
+			var index = 0;
+			slot change (e) {
+				e.target.textContent = 'Bar' + (++this.scope.index);
+			}
+			button x-tap='change' > 'Foo';
+		`);
+		var button = $(dom).filter('button');
+		var test = `
+			find ('button') {
+				text ('Foo');
+				click;
+				// sugar syntax
+				text Bar1;
+				do click;
+				eq text Bar2;
+		`;
+		DomTest(dom, test)
+			.then(() => {
+				eq_(button.text(), 'Bar2');
+				done();
+			}, assert.avoid(done));
+	},
+	'should press the hotkey' (done) {
+		var dom = mask.render(`
+			var index = 0;
+			input {
+				event press:alt+f (e) {
+					e.target.value += 'x' + (++this.scope.index);
+				}
+			}
+		`);
+		var inputA = $(dom).filter('input');
+		var test = `
+			find ('input') {
+				focus;
+				press ('alt+f');
+				press ('alt+f');
+				press ('alt+c');
+				press ('f');
+			}
+		`;
+		//$(dom).appendTo('body');
+		DomTest(dom, test)
+			.then(() => {
+				eq_(inputA.val(), 'x1x2f');
+				done();
+			}, assert.avoid(done));
+	}
+});

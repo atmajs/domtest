@@ -1,19 +1,29 @@
+DomTest.config({
+	report () {
+
+	}
+});
 UTest({
-	'component' () {
-		var compo = new Compo;
-		var template = `
+	'shound find and miss in a component' (done) {
+		var compo = mask.Compo.initialize(`
 			div > input value=Foo;
 			:utest {
 				find (input) {
 					val Foo;
 				}
+				find (section);
 			}
-		`
-		mask.render(template, null, null, null, compo);
-		return DomTest.compo(compo);
+		`);
+		DomTest
+			.compo(compo)
+			.then(assert.avoid(done), (errors) => {
+				eq_(errors.length, 1);
+				has_(errors[0].message, 'section');
+				done();
+			})
 	},
-	
-	'template' () {
+
+	'should render template and run assertions' () {
 		var count = 0;
 		DomTest.config({
 			report: (error) => {
@@ -21,22 +31,22 @@ UTest({
 				++count
 			}
 		});
-		
+
 		var template = `
 			.foo {
 				span > 'One'
 				span > 'Two'
 			}
-			
+
 			:utest {
 				find (span) > length 2;
 			}
-			
+
 			:utest {
 				find (.foo) > prop tagName DIV;
 			}
 		`;
-		
+
 		return DomTest
 			.compo(template)
 			.done(() => {

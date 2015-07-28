@@ -4,7 +4,7 @@ before_script:
   - bower install
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start  
-  - npm build
+  - npm run build
   - node_modules/.bin/atma server &
   - sleep 5
   - firefox http://localhost:5777/utest/ &

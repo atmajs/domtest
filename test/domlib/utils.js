@@ -1,16 +1,16 @@
 DomTest.config({
-	report () {
+	report: function () {
 
 	}
 });
 
-var Utils = {
-	countSuccess (mix, test, model) {
+window.Utils = {
+	countSuccess: function (mix, test, model) {
 		var count = 0;
 		DomTest.config({
-			report (error) {
+			report: function (error) {
 				assert.ifError(error);
-				++count
+				++count;
 			}
 		});
 

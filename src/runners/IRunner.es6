@@ -94,12 +94,15 @@ var IRunner = class_create(class_EventEmitter, class_Dfr, {
 
 	check (ctx, ...args) {
 		var [name, ...arr] = args;
-		if (typeof this.assert[name] !== 'function') {
+
+		var fn = this.assert[name] || this.assert[name + '_'];
+		if (typeof fn !== 'function') {
 			arr.unshift(name);
-			name = 'equal';
+			fn = this.assert.equal;
 		}
 
 		if (arr.length < 2) {
+			logger.log('throw', arr);
 			throw Error('Invalid arguments in assertion');
 		}
 
@@ -107,7 +110,7 @@ var IRunner = class_create(class_EventEmitter, class_Dfr, {
 			expect = arr.pop(),
 			actual = this.driver.getActual(ctx, actualKey, ...arr);
 
-		return this.assert[name](actual, expect);
+		return fn.call(this.assert, actual, expect);
 	},
 	try_ (fn, ...args) {
 		var error;

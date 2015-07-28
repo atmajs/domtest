@@ -9,6 +9,7 @@
  * (c) 2012, %IMPORT(year)% Atma.js and other contributors
  */
 (function(root, factory){
+
 	var _global = typeof global !== 'undefined' ? global : window,
 		_mask = _global.mask || (_global.atma && _global.atma.mask),
 		_$ = _global.jQuery || _global.$,
@@ -17,8 +18,6 @@
 	function construct () {
 		var err;
 		if (_mask == null) err = 'MaskJS';
-		if (_$ == null) err = 'jQuery';
-
 		if (err)
 			throw Error(err + ' was not loaded');
 

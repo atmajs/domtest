@@ -11,6 +11,6 @@ if (typeof jQuery !== 'undefined') {
 		// import /bower_components/jquery-simulate-ext/src/jquery.simulate.drag-n-drop.js
 		// import /bower_components/jquery-simulate-ext/src/jquery.simulate.key-combo.js
 		// import /bower_components/jquery-simulate-ext/src/jquery.simulate.key-sequence.js
-		
+
 	}(jQuery));
 }

@@ -25,8 +25,8 @@ var IDriverAssertionCollection = class_create(IActorCollection, {
 		var name = current.node.tagName,
 			ctx = current.$;
 
-
-		if (typeof runner.assert[name] !== 'function') {
+		var fn = runner.assert[name] || runner.assert[name + '_'];
+		if (typeof fn !== 'function') {
 			return ctx[name] !== void 0;
 		}
 		var [key] = runner.getCurrentArgs_();

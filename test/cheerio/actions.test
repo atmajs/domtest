@@ -1,0 +1,111 @@
+UTest({
+	$config: {
+		timeout: 4000
+	},
+	'should traverse elements using `with`' () {
+		var template = `
+			<div>
+				<section class='foo'>Foo</section>
+				<aside><span id='Span'></span></aside>
+			</div>
+		`;
+		var test = `
+			with (section) {
+				eq('text', 'Foo');
+			}
+			with (aside > span) {
+				attr ('id', 'Span');
+			}
+			with (.foo) {
+				has text Fo;
+				attr class foo;
+			}
+		`;
+
+		return Utils
+			.countSuccess(template, test)
+			.done(count => eq_(count, 7));
+	},
+
+	'should evaluate javascript function' () {
+		var template = `
+			<div data-testy=div ><section>Foo</section></div>
+		`;
+		var test = `
+			data testy div;
+			find (section) {
+				function changeText ($el, assert) {
+					$el.text('Baz');
+					assert.equal(2, 2);
+				}
+				eq ('text', 'Baz');
+			}
+		`;
+		return Utils
+			.countSuccess(template, test)
+			.done(count => eq_(count, 4));
+	},
+	'should wait some time' () {
+		var div = require('cheerio')('<div></div>');
+		var test = `
+			await (300) {
+				text Baz;
+			}
+		`;
+		setTimeout(() =>
+			div.append('<section>Baz</section>')
+		, 150);
+
+		return Utils
+			.countSuccess(div, test)
+			.done(count => eq_(count, 1));
+
+	},
+	'should await for an element' () {
+		var div = require('cheerio')('<div></div>');
+		var test = `
+			await (section) {
+				eq('text', 'Baz');
+			}
+		`;
+		setTimeout(() =>
+			div.append('<section>Baz</section>')
+		, 400);
+
+		return Utils
+			.countSuccess(div, test)
+			/* `await` checks for the element and also causes an assertion */
+			.done(count => eq_(count, 2));
+	},
+
+	'should call function on context' () {
+		var template = `
+			<div>Foo</div>
+		`;
+		var test = `
+			text Foo;
+			call text('Baz');
+			text Baz;
+		`;
+		return Utils
+			.countSuccess(template, test)
+			.done(count => eq_(count, 2));
+	},
+
+	'should assert class names' () {
+		var template = `
+			<div class='foo'></div>
+		`;
+		var test = `
+			hasClass foo;
+			hasClass ('baz', false);
+
+			call addClass('baz');
+			hasClass ('baz');
+		`;
+		return Utils
+			.countSuccess(template, test)
+			.done(count => eq_(count, 3));
+	}
+
+});

@@ -8,9 +8,13 @@
 		Assertions: new JMaskAssertions,
 
 		createRoot (node) {
-			return mask.jmask(node);
+			var $root = mask.jmask(node);
+			var dfr = new class_Dfr;
+			if ($root.length === 0) {
+				return dfr.reject('Set is empty. No elements to test');
+			}
+			return dfr.resolve($root);
 		},
-
 
 		isOwnCtx (ctx) {
 			if (ctx == null) {

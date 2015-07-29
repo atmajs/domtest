@@ -26,7 +26,13 @@
 				el = el.body;
 			}
 			this.domLib = this.getDomLibrary_(el)
-			return this.domLib(el);
+
+			var dfr = new class_Dfr;
+			var $root = this.domLib(el);
+			if ($root.length === 0) {
+				return dfr.reject('Set is empty. No elements to test');
+			}
+			return dfr.resolve($root);
 		},
 
 		beforeEvent (runner) {

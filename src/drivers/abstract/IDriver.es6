@@ -24,6 +24,10 @@ var IDriver = class_create({
 		next('Uknown strategy: ' + current.node.tagName);
 	},
 
+	createRoot (root) {
+		return new class_Dfr().reject('Not implemented');
+	},
+
 	getActual (ctx, key, ...args) {
 		var actual = ctx[key];
 		if (typeof actual === 'function') {

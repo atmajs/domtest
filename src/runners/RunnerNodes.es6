@@ -1,23 +1,37 @@
 var RunnerNodes = class_create(IRunner, {
 
-	constructor: function Runner(driver, container, node, model, compo) {
+	constructor: function Runner(driver, root, node, model, compo) {
+		this.root = root;
+		this.node = node;
+		this.$ = null;
+		this.stack = [];
+	},
 
-		this.$ = driver.createRoot(container);
-		this.stack = [{
-			$: this.$,
-			node: node
-		}];
-
-		if (this.$.length === 0) {
-			this.report_(Error('No elements to test <root>'));
-		}
+	createRoot () {
+		return this
+			.driver
+			.createRoot(this.root)
+			.done(($) => {
+				this.$ = $;
+				this.stack = [{
+					$: $,
+					node: this.node
+				}];
+			});
 	},
 
 	process: function assert_TestDom (error) {
+		if (error == null && this.$ == null) {
+			this
+				.createRoot()
+				.done(() => this.process())
+				.fail(error => this.process(error));
+			return this;
+		}
 		if (error && this.errors[this.errors.length - 1] !== error) {
 			this.errors.push(error);
 		}
-		
+
 		var current = this.getNext_(error == null);
 		if (current == null) {
 			this.emit('complete', this.errors);

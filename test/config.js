@@ -18,6 +18,14 @@ module.exports = {
 			],
 
 			tests: 'test/jmask/**.test'
+		},
+		cheerio : {
+			exec: 'node',
+			env: [
+				'/lib/domtest.js::DomTest',
+				'/test/cheerio/utils.js::Utils'
+			],
+			tests: 'test/cheerio/**.test'
 		}
 	}
 };

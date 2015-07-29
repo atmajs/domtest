@@ -1,0 +1,78 @@
+DomTest.config({
+	report () {
+
+	}
+});
+UTest({
+	'should once find and once miss an element' (done) {
+		var html = `
+			<span></span>
+			<div></div>
+		`;
+		var test = `
+			find ('span');
+			find ('section');
+		`;
+		DomTest
+			.use('cheerio')
+			.process(html, test)
+			.then(assert.avoid(), (errors) => {
+				eq_(errors.length, 1);
+				has_(errors[0].message, 'section');
+				done();
+			});
+	},
+	'should once find and once miss an element in a context' (done) {
+		var html = `
+			<div><span></span></div>;
+			<section></section>;
+			<span></span>;
+		`;
+		var test = `
+			find (div) > find ('span') > eq length 1;
+			find (section) > find ('span') > eq length 0;
+			find (span) > eq length 1;
+			filter (span) > eq length 1;
+		`;
+		DomTest
+			.use('cheerio')
+			.process(html, test)
+			.then(assert.avoid(), (errors) => {
+				eq_(errors.length, 1);
+				has_(errors[0].message, 'span');
+				done();
+			});
+	},
+	'should once find and once miss closest parent' (done) {
+		var html = `
+			<div><span><footer></footer></span></div>
+		`;
+		var test = `
+			find ('footer') > closest('div') > eq length 1;
+			find ('footer') > closest('section') > eq length 0;
+		`;
+		DomTest
+			.use('cheerio')
+			.process(html, test)
+			.then(assert.avoid(), (errors) => {
+				eq_(errors.length, 1);
+				has_(errors[0].message, 'section');
+				done();
+			});
+	},
+
+	'should request remote, find input and miss an element' (done) {
+		var test = `
+			find (input);
+			find ('#trambam')
+		`;
+		DomTest
+			.use('cheerio')
+			.process('http://google.com', test)
+			.then(assert.avoid(), (errors) => {
+				eq_(errors.length, 1);
+				has_(errors[0].message, 'trambam');
+				done();
+			});
+	}
+})

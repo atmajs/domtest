@@ -112,6 +112,38 @@ var IRunner = class_create(class_EventEmitter, class_Dfr, {
 
 		return fn.call(this.assert, actual, expect);
 	},
+	checkAsync (ctx, ...args) {
+		var [name, ...arr] = args;
+
+		var fn = this.assert[name] || this.assert[name + '_'];
+		if (typeof fn !== 'function') {
+			arr.unshift(name);
+			fn = this.assert.equal;
+		}
+
+		if (arr.length < 2) {
+			logger.log('throw', arr);
+			throw Error('Invalid arguments in assertion');
+		}
+
+		var actualKey = arr.shift(),
+			expect = arr.pop();
+
+		return class_Dfr.run((resolve, reject) => {
+			this
+				.driver
+				.getActualAsync(ctx, actualKey, ...arr)
+				.done(actual => {
+					var err = fn.call(this.assert, actual, expect);
+					if (err) {
+						reject(err);
+						return;
+					}
+					resolve();
+				})
+				.fail(reject)
+		});
+	},
 	try_ (fn, ...args) {
 		var error;
 		try {

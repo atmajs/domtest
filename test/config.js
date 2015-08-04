@@ -26,6 +26,14 @@ module.exports = {
 				'/test/cheerio/utils.js::Utils'
 			],
 			tests: 'test/cheerio/**.test'
+		},
+		selenium : {
+			exec: 'node',
+			env: [
+				'/lib/domtest.js::DomTest',
+				'/test/selenium/utils.js::Utils'
+			],
+			tests: 'test/selenium/**.test'
 		}
 	}
 };

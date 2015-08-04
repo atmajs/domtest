@@ -5,6 +5,12 @@ var IDriver = class_create({
 	Actions: new IDriverActionCollection,
 	Assertions: new IDriverAssertionCollection,
 
+	options: null,
+
+	constructor (options = {}) {
+		this.options = options;
+	},
+
 	process (runner, current, next) {
 
 		var fns = ['Traversers', 'Events', 'Actions', 'Assertions'],
@@ -34,5 +40,12 @@ var IDriver = class_create({
 			return actual.apply(ctx, args);
 		}
 		return actual;
+	},
+	getActualAsync (ctx, key, ...args) {
+		var actual = ctx[key];
+		if (typeof actual === 'function') {
+			return actual.apply(ctx, args);
+		}
+		return ctx.then($ => $[key]);
 	}
 });

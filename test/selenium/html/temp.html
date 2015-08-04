@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<body>
+
+			<input value='start'/>
+			<script>
+				var index = 0;
+				document.querySelector('input').addEventListener('keydown', function(e){
+					e.target.value = e.keyCode + '|' + ([e.altKey, e.ctrlKey].join(','));
+					e.preventDefault();
+				}, false)
+			</script>
+		
+</body>
+</html>

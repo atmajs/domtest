@@ -4,8 +4,8 @@ var Conductor = class_create(class_EventEmitter, class_Dfr, {
 	driver: null,
 	runners: null,
 	index: 0,
-	constructor (driverName) {
-		this.driver = Drivers.initialize(driverName || this.defaultDriver);
+	constructor (driverName, options) {
+		this.driver = Drivers.initialize(driverName || this.defaultDriver, options);
 		this.runners = [];
 	},
 	process (container, mix, model, compo) {

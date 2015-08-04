@@ -29,7 +29,7 @@ obj_extend(assert_TestDom, {
 	},
 	Drivers: Drivers,
 	Conductor: Conductor,
-	use (driverName) {
-		return new Conductor(driverName);
+	use (driverName, options = null) {
+		return new Conductor(driverName, options);
 	}
 });

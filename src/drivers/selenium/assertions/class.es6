@@ -3,14 +3,10 @@
 		if (args.length === 1) {
 			args.push(true);
 		}
-
-		var [name] = args;
-		ctx
-			.hasClass(...args)
-			.done(x => {
-				var error = runner.assert(x, true, `Should have '${name}' class`);
-				done(error);
-			})
-
+		runner
+			.checkAsync(ctx, 'hasClass', ...args)
+			.done(() => done())
+			.fail(err => done(err))
+			;
 	});
 }());

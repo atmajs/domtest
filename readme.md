@@ -120,7 +120,7 @@ find ('select.city') {
 ```
 
 
-## Assertions
+## [Assertions](https://github.com/atmajs/assertion)
 
 An assertion component reads current `context`s property or calls a function to compare the value with expected value.
 
@@ -198,254 +198,148 @@ $ bower install domtest
 $ npm install domtest
 ```
 
-### API
+## API
 
-- DomTest
+
+- `DomTest()`
 
 	```javascript
-	DomTest(Element: Node, MaskTestSuite: String): IEventEmitter<Runner>
+	DomTest(Element: Node, MaskTestSuite | Array<MaskTestSuite>): Runner
 	```
 
-	#### Runner
+	Create default `DomLibRunner` and immediately start the test.
+
+- `DomTest.use(driver:string, settings:object): Runner`
+
+	Create the Test Runner. Available runners:
+
+	- `'domlib'`
+	- `'jmask'`
+	- `'cheerio'`
+	- `'selenium'`
+
+	> :exclamation: Note, that `cheerio` and `selenium` can be evaluated in Node.JS only, and `domlib` in browser only, `jmask` can be used in browser and Node.js
+
+### Runner
+
+`Runner implements IEventEmitter, IPromise`
+
+- `Runner::process(root:any, suite: MaskTestSuite | Array<MaskTestSuite>)`
+
+	- `root` is the root object, which runner uses for test. Refer to the particular Runner to find out the required root-type.
+	- `suite(s)` is/are the tests to be run for the root object
+
+##### Events
 	- `.on(event, handler)`
 
-		| Event | Data | Description |
-		|--------|-----------| ------------|
-		| `fail`  | `error: AssertionError` | Failed assertion |
-		| `success`| - | Successful assertion |
-		| `progress` | `runner:Runner, node: MaskNode, error:AssertionError` | After each step. `error` is null, when assertion is ok |
-		| `complete` | `errors:Array<AssertionError>` | Runner has finished all tests |
+	| Event | Data | Description |
+	|--------|-----------| ------------|
+	| `fail`  | `error: AssertionError` | Failed assertion |
+	| `success`| - | Successful assertion |
+	| `progress` | `runner:Runner, node: MaskNode, error:AssertionError` | On each step. `error` is null, when assertion is ok |
+	| `complete` | `errors:Array<AssertionError>` | Runner has finished all tests |
 
 	- `.off(event, handler)`
 
+### `MaskTestSuite:string|MaskAST|function`
 
-- Component test _(For [MaskJS](https://github.com/atmajs/maskjs) users)_
+- `string|MaskAST`: Mask template with the components. See the [Test Suite](#testsuites) for supported components
+- `function`: Custom function
 
-	If you use MaskJS for the application, it simplifies component and template testings
 
-	```javascript
-	DomTest.compo(template, ?model): IEventEmitter<Runner>
-	```
-	_E.g._
-	```javascript
-	DomTest.compo(`
-		section #content {
-			:profile;
+## Runners
+
+##### Domlib
+
+Uses jQuery-like dom library to test HtmlElements in browser. (`@default`)
+
+```javascript
+DomTest(document.body, `
+	find ('button') {
+		click;
+		text ('Foo');
+	}
+`);
+```
+
+##### jMask
+
+Uses jMask library to test MaskAST in browser or Node.js
+
+```javascript
+var template = 'section > input placeholder="Foo";'
+DomTest
+	.use('jmask')
+	.process(template, `
+		find('input') {
+			attr placeholder Foo;
 		}
-		:utest {
-			// binding test
-			with (input.profile-name) >
-				type FooName;
-			with (model) {
-				name FooName;
+	`);
+```
+
+##### Cheerio
+
+Uses cheerio module to test HTML in Node.js.
+
+> :exclamation: No actions are available here, _as no listeners can be attached to plain HTML_.
+
+```javascript
+var template = '<section><input placeholder="Foo"></section>';
+DomTest
+	.use('cheerio')
+	.process(template, `
+		find('input') {
+			attr placeholder Foo;
+		}
+	`);
+
+DomTest
+	.use('cheerio')
+	.process('http://google.com', `
+		find('input') {
+
+		}
+	`);
+```
+
+##### Selenium
+
+Uses `selenium-webdriver` module to test the Web Pages
+
+```javascript
+DomTest
+	.use('selenium', Options)
+	.process('https://developer.mozilla.org/en/', `
+		find('input[name=q]') {
+			type XmlHttpRequest;
+			trigger submit;
+		}
+		await ('.result-list') {
+			prop tag ul;
+			children {
+				notEq length 0;
+				eq (1) {
+					has text XmlHttpRequest;
+				}
 			}
 		}
 	`);
-	```
-
-
-
-### Syntax
-
-_Refer to the MaskJS syntax spec._
-
-Each node performs some action: `assertion`, `manipulation`, etc.
-
-### Assertions
-
-jQuery property of the current set is used, and in case if the property is the function, than the functions result is used for the assertion.
-
-| assertionFunction      | Description |
-|------------------------|-------------|
-| `eq`, `notEq`          | Equal(Not Equal) check |
-| `deepEq`, `notDeepEq`  | Objects and Arrays comparison |
-| `has`, `hasNot`        | Check for a substring, check children by selector, check sub object existance |
-| `lt`, `lte`			 | Less-Than, Less-Than-Or-Equal |
-| `gt`, `gte`			 | Greater-Than, Greater-Than-Or-Equal |
-
-
-```mask
-assertionFunction (jqueryAccessor, [...arguments], testValue);
-
-eq('text', 'Bar');
-//js counterpart: assert.equal($set.text(), 'Bar');
-
-eq('length', 1);
-//js counterpart: assert.equal($set.length, 1);
-
-eq('attr', 'id', 'Foo');
-//js counterpart: assert.equal($set.attr('id'), 'Bar');
 ```
 
-Simplified syntax:
-```mask
-assertionFunction jqueryAccessor [...arguments] testValue;
+**Options default**
 
-eq text Bar;
-eq length 1;
-eq attr id Foo;
-```
-
-`eq` is the default assertion and can be omitted
-```mask
-jqueryAccessor [...arguments] testValue
-
-text Bar;
-length 1;
-attr id Foo;
-```
-
-
-
-### Traverse
-
-_Refer to jQuery traverse functions._
-
-- `find` (_alias_ `with`), `children`, `closest`, `siblings`, `parent`, `eq`, `filter`, `first`, `last`, `next`, `nextAll`, `nextUntil`, `prev`, `prevAll`, `prevUntil`
-
-All assertions, like all other actions, are called in a current jQuery context. From the start on this is equal to the root element(s) (_see the `DomTest` function_).
-With the traverse functions you select new elements for the current context. They will throw also an error if no elements can't be found.
-
-```mask
-traverseFunction (selector) {
-	// ... assertoions, etc
-}
-```
-Example:
-```mask
-find (div > span) {
-	data id Foo;
-
-	// nesting example
-	find (em) {
-		text Foo;
-	}
-}
-```
-
-
-
-### Simulation
-
-
-Triggers an event or simulates user interaction
-
-```mask
-do ActionName (...arguments);
-```
-
-> All DOM and Simulations could be triggered without the keyword `do`
-
-Examples:
-```
-do customFooEvent;
-do click; // or just
-click;
-// simulate press (_also combinations_)
-press ('ctrl+c');
-// simulate user type
-do type ('Hello World');
-```
-
-- Dom events
-	`mousemove`, `mousedown`, `mouseup`, `click`, `dblclick`, `mouseover`, `mouseout`, `mouseenter`, `mouseleave`, `contextmenu`
-
-- Simulate
-
-	| Action | Arguments | Description |
-	|--------|-----------| ------------|
-	|`press` | (Char/String)  | Press a key or combination. Letters are case sensitive |
-	|`type`  | (String) | Simulate user typing |
-	|`select`| (String) <br/> (start, end) | `SELECT NODE`: Search for an option by text or attribute(`value`, `name`, `id`) and select this <br /> `INPUT/TEXTAREA NODE`: Selects the text/range|
-
-
-### Debugging
-`debugger`: stop on some element(s) to inspect them in developer tools:
-```mask
-children (li) {
-	debugger;
-}
-```
-
-
-### Async
-`async`: wait some time or wait until some element appears in the dom.
-For instance, when there is some async calls after button click action
-```mask
-await (selector);
-await (number);
-```
-
-Example:
-```
-find ('button.show-about') > click;
-await('section.about') {
-    has html Credits;
-}
-```
-
-### Manipulation
-`call`: call a jQuery function to modify current elemens
-> _rarely used_, as usually all dom modifications are performed within some handlers
-
-```mask
-call text('Foo'); // or simpler(no whitespace in the text)
-call text Foo
-// This sets textContent to 'Foo' (not the assertion)
-```
-
-### Javascript
-`slot`: is an embedded javascript block to execute. _Can cover any need_
 ```javascript
-// sync version
-slot name ($ctx, assert) { /*...*/ }
-
-// async version
-slot name ($ctx, assert, done) {/*...*/}
-
-find (input) {
-	slot checkFoo ($input, assert) {
-		// just a simple js demo
-		var foo = someFooFunction($input);
-		assert.equal(foo, 3)
-	}
+{
+	name: 'Chrome',
+	args: ['no-sandbox'],
+	binaryPath: null,
 }
 ```
 
-### Examples
-[/examples](./examples)
+For more information, please refer to sources: [config.es6](/src/drivers/selenium/config.es6)
 
-```bash
-# install dependencies
-bower install
+> :exclamation: you can override functions to set any webdriver option you need.
 
-# run local static server
-npm install -g atma
-atma server
-
-# navigate to e.g. `http://localhost:5777/examples/standalone.html`
-```
-
-
-### Contribute
-#### Build
-```bash
-$ npm install
-$ bower install
-$ git submodule update --recursive
-$ npm build
-```
-
-#### Test
-```bash
-npm test
-```
-
-----
-
-Credits to:
-- [jQuery-Simulate](https://github.com/jquery/jquery-simulate)
-- [jQuery-Simulate-Ext](https://github.com/j-ulrich/jquery-simulate-ext)
 
 ----
 

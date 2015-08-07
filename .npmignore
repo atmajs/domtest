@@ -13,3 +13,4 @@ bower.json
 .travis.yml
 .npmignore
 .gitignore
+.gitmodules

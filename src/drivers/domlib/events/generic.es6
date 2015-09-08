@@ -28,8 +28,15 @@
 
 	function triggerDelegate(event) {
 		return function($, ...args){
-			var fn = $.simulate || $.trigger;
-			fn.call($, event, ...args);
+			if ($.simulate) {
+				var rkeyEvent = /^key/,
+					rmouseEvent = /^(?:mouse|contextmenu)|click/;
+
+				if (rkeyEvent.test(event) || rmouseEvent.test(event)) {
+					$.simulate(event, ...args);
+				}
+			}
+			$.trigger(event, ...args);
 		};
 	}
 }());

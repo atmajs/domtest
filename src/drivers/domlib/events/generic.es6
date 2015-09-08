@@ -34,6 +34,7 @@
 
 				if (rkeyEvent.test(event) || rmouseEvent.test(event)) {
 					$.simulate(event, ...args);
+					return;
 				}
 			}
 			$.trigger(event, ...args);

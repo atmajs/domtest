@@ -35,6 +35,9 @@ var IDriver = class_create({
 	},
 
 	getActual (ctx, key, ...args) {
+		if (key in ctx === false) {
+			return key;
+		}
 		var actual = ctx[key];
 		if (typeof actual === 'function') {
 			return actual.apply(ctx, args);
@@ -42,6 +45,9 @@ var IDriver = class_create({
 		return actual;
 	},
 	getActualAsync (ctx, key, ...args) {
+		if (key in ctx === false) {
+			return ctx.then($ => key);
+		}
 		var actual = ctx[key];
 		if (typeof actual === 'function') {
 			return actual.apply(ctx, args);

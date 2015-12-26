@@ -39,9 +39,9 @@ var IRunner = class_create(class_EventEmitter, class_Dfr, {
 	getCurrentCompo_ () {
 		var el = this.getCurrent_().$;
 		if (el.compo) {
-			return el.compo() || this.compo;
+			return el.compo() || this.compo || el;
 		}
-		return this.compo;
+		return this.compo || el;
 	},
 	getCurrentArgs_ () {
 		var node = this.getCurrent_().node;

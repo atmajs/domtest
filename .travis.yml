@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 env:
   - BROWSER_PATH=/home/travis/build/atmajs/domtest/chrome-linux/chrome
 
